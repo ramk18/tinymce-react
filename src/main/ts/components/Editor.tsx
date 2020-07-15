@@ -56,12 +56,11 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
-  private setContent(content) {
-    const value = (content)? content : this.props.value;
+  private setContent(editor: any, content: string) {
     if (this.props.renderFormat && this.props.renderFormat !== 'auto') {
-      this.editor.setContent(value);
-    }else {  
-      this.editor.setContent(value, {format: this.props.renderFormat});
+      editor.setContent(content);
+    }else {
+      editor.setContent(content, {format: this.props.renderFormat});
     }
   }
 
@@ -72,7 +71,7 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        this.setContent();
+        this.setContent(this.editor, this.props.value);
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -153,7 +152,7 @@ export class Editor extends React.Component<IAllProps> {
     const editor = this.editor;
     if (editor) {
       const newContent = editor.getContent({ format: this.props.outputFormat });
-  
+
       if (newContent !== this.currentContent) {
         this.currentContent = newContent;
         if (isFunction(this.props.onEditorChange)) {
@@ -166,16 +165,16 @@ export class Editor extends React.Component<IAllProps> {
   private handleInit = (initEvent: {}) => {
     const editor = this.editor;
     if (editor) {
-      setContent(this.getInitialValue());
-  
+      this.setContent(editor, this.getInitialValue());
+
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
       }
-  
+
       if (isFunction(this.props.onInit)) {
         this.props.onInit(initEvent, editor);
       }
-  
+
       bindHandlers(editor, this.props, this.boundHandlers);
     }
   }
