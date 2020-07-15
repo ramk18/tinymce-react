@@ -21,6 +21,7 @@ export interface IProps {
   onEditorChange: EventHandler<any>;
   value: string;
   init: Record<string, any>;
+  renderFormat: 'raw' | 'auto' | 'html';
   outputFormat: 'html' | 'text';
   tagName: string;
   cloudChannel: string;
@@ -55,6 +56,15 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
+  private setContent(content) {
+    const value = (content)? content : this.props.value;
+    if (this.props.renderFormat && this.props.renderFormat !== 'auto') {
+      this.editor.setContent(value);
+    }else {  
+      this.editor.setContent(value, {format: this.props.renderFormat});
+    }
+  }
+
   public componentDidUpdate (prevProps: Partial<IAllProps>) {
     if (this.editor && this.editor.initialized) {
       bindHandlers(this.editor, this.props, this.boundHandlers);
@@ -62,7 +72,7 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        this.editor.setContent(this.props.value);
+        this.setContent();
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -156,7 +166,7 @@ export class Editor extends React.Component<IAllProps> {
   private handleInit = (initEvent: {}) => {
     const editor = this.editor;
     if (editor) {
-      editor.setContent(this.getInitialValue());
+      setContent(this.getInitialValue());
   
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
