@@ -88,6 +88,7 @@ export const EditorPropTypes: IEditorPropTypes = {
   init: PropTypes.object,
   initialValue: PropTypes.string,
   onEditorChange: PropTypes.func,
+  renderFormat: PropTypes.oneOf(['raw', 'html', 'auto']),
   outputFormat: PropTypes.oneOf(['html', 'text']),
   value: PropTypes.string,
   tagName: PropTypes.string,
