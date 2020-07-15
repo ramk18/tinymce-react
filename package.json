@@ -1,6 +1,6 @@
 {
   "name": "@ramk18/tinymce-react",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "description": "Forked Official TinyMCE React Component",
   "repository": {
     "url": "https://github.com/ramk18/tinymce-react"
