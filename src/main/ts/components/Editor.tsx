@@ -56,11 +56,14 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
-  private setContent(editor: any, content: string, renderFormat: any) {
-    if (renderFormat && renderFormat !== 'auto') {
-      editor.setContent(content);
-    }else {
-      editor.setContent(content, {format: renderFormat});
+  private setContent(content: string, renderFormat: any) {
+    const editor = this.editor;
+    if (editor) {
+      if (renderFormat && renderFormat !== 'auto') {
+        editor.setContent(content);
+      }else {
+        editor.setContent(content, {format: renderFormat});
+      }
     }
   }
 
@@ -71,7 +74,7 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        this.setContent(this.editor, this.props.value, this.props.renderFormat);
+        this.setContent(this.props.value, this.props.renderFormat);
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -165,7 +168,7 @@ export class Editor extends React.Component<IAllProps> {
   private handleInit = (initEvent: {}) => {
     const editor = this.editor;
     if (editor) {
-      this.setContent(editor, this.getInitialValue(), this.props.renderFormat);
+      this.setContent(this.getInitialValue(), this.props.renderFormat);
 
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
