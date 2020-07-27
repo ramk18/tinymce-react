@@ -21,8 +21,8 @@ export interface IProps {
   onEditorChange: EventHandler<any>;
   value: string;
   init: Record<string, any>;
-  renderFormat: 'raw' | 'auto' | 'html';
-  outputFormat: 'html' | 'text';
+  renderFormat: 'html' | 'text' | 'raw' ;
+  outputFormat: 'html' | 'text' | 'raw' ;
   tagName: string;
   cloudChannel: string;
   plugins: string | string[];
@@ -56,14 +56,11 @@ export class Editor extends React.Component<IAllProps> {
     this.boundHandlers = {};
   }
 
-  private setContent(content: string, renderFormat: any) {
+  private setContent(content: string, format: any) {
     const editor = this.editor;
     if (editor) {
-      if (renderFormat && renderFormat !== 'auto') {
-        editor.setContent(content);
-      }else {
-        editor.setContent(content, {format: renderFormat});
-      }
+      if (format) editor.setContent(content, {format});
+      else editor.setContent(content);
     }
   }
 
@@ -74,7 +71,7 @@ export class Editor extends React.Component<IAllProps> {
       this.currentContent = this.currentContent || this.editor.getContent({ format: this.props.outputFormat });
 
       if (typeof this.props.value === 'string' && this.props.value !== prevProps.value && this.props.value !== this.currentContent) {
-        this.setContent(this.props.value, this.props.renderFormat);
+        this.setContent(this.props.value, this.props.renderFormat || 'html');
       }
       if (typeof this.props.disabled === 'boolean' && this.props.disabled !== prevProps.disabled) {
         this.editor.setMode(this.props.disabled ? 'readonly' : 'design');
@@ -168,7 +165,7 @@ export class Editor extends React.Component<IAllProps> {
   private handleInit = (initEvent: {}) => {
     const editor = this.editor;
     if (editor) {
-      this.setContent(this.getInitialValue(), this.props.renderFormat);
+      this.setContent(this.getInitialValue(), this.props.renderFormat || 'html');
 
       if (isFunction(this.props.onEditorChange)) {
         editor.on('change keyup setcontent', this.handleEditorChange);
